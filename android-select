@@ -1,0 +1,40 @@
+VERSION=1.0
+
+command_help () {
+  echo -e "Usage:\tandroid-select -s
+      \tandroid-select -v
+Arguments:
+      \t
+      \t-s <android_folder_path> \tthe path for the current Xcode folder
+      \t-v \tandroid-select version information"
+} 
+
+if [ $# -eq 0 ]; then
+  command_help
+fi
+
+command_switch () {
+  FOLDER=~/sdks
+  FILE=~/sdks/android
+
+  if [ ! -d $FOLDER ]; then
+    echo "creating folder $FOLDER"
+    mkdir -p $FOLDER
+  fi
+
+  if [ -L $FILE ]; then
+    echo "destroying old reference"
+    rm $FILE
+  fi
+
+  ln -s $OPT $FILE
+}
+
+while getopts "hvs:o" Option
+do
+  case $Option in
+    h     ) command_help;;
+    v     ) echo "android-select version - $VERSION";;
+    s | o ) OPT=$OPTARG; command_switch;;
+  esac
+done
