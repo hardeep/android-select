@@ -1,11 +1,16 @@
 VERSION=1.0
 
+FOLDER=~/sdks
+FILE=~/sdks/android
+
 command_help () {
-  echo -e "Usage:\tandroid-select -s
+  echo -e "Usage:\tandroid-select -p
+      \tandroid-select -s
       \tandroid-select -v
 Arguments:
-      \t
-      \t-s <android_folder_path> \tthe path for the current Xcode folder
+
+      \t-p \tandroid-select \tPrints the current Android SDK path
+      \t-s \t<android_folder_path> Sets the path for the current Android SDK path
       \t-v \tandroid-select version information"
 } 
 
@@ -14,8 +19,6 @@ if [ $# -eq 0 ]; then
 fi
 
 command_switch () {
-  FOLDER=~/sdks
-  FILE=~/sdks/android
 
   if [ ! -d $FOLDER ]; then
     echo "creating folder $FOLDER"
@@ -30,11 +33,16 @@ command_switch () {
   ln -s $OPT $FILE
 }
 
-while getopts "hvs:o" Option
+command_print () {
+  ls -al $FILE | awk '{ print $NF }';
+}
+
+while getopts "hvs:op" Option
 do
   case $Option in
     h     ) command_help;;
     v     ) echo "android-select version - $VERSION";;
     s | o ) OPT=$OPTARG; command_switch;;
+    p     ) command_print;;
   esac
 done
